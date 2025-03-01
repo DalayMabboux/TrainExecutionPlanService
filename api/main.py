@@ -6,7 +6,7 @@ import os
 app = FastAPI()
 
 # Path to the favicon.ico file
-favicon_path = os.path.join(os.path.dirname(__file__), "static", "favicon.ico")
+favicon_path = os.path.join(os.path.dirname(__file__), "static", "favicon.png")
 
 # Mount the "static" directory
 app.mount("/static", StaticFiles(directory="static"), name="static")
