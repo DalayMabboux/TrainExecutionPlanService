@@ -3,7 +3,7 @@ from enum import Enum
 from fastapi import FastAPI
 from typing import List
 from pydantic import BaseModel
-from appl.ppo_eval import run_ppo_2
+from appl.ppo_eval import run_ppo
 
 # NICHT ENTFERNEN
 # from appl.traintrack_env.envs.model import LocomotiveAction, TrackSwitchAction
@@ -33,10 +33,14 @@ class Action(Enum):
     SWITCH_3_STRAIGHT = "switch_3_straight"
     SWITCH_3_DIVERGING = "switch_3_diverging"
 
+
+def action_to_enum(action_as_int: int) -> Action:
+    return Action(list(Action._member_map_.items())[action_as_int][1])
+
 @app.post("/evaluate-execution-plan")
 async def evaluate_execution_plan(state: State) -> List[Action]:
-    run_ppo_2(state_to_vec(state))
-    return [Action.TRAIN_1_FORWARD, Action.SWITCH_1_STRAIGHT, Action.TRAIN_1_FORWARD, Action.SWITCH_0_DIVERGING, Action.TRAIN_1_BACKWARD]
+    bla = run_ppo(state_to_vec(state))
+    return list(map(action_to_enum, bla))
 
 def state_to_vec(state: State) -> [int]:
     return [state.train1_initial_position, state.train2_initial_position, state.train1_target_position, state.train2_target_position, *state.switch_state]

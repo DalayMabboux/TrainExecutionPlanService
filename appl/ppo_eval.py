@@ -9,6 +9,9 @@ import appl.traintrack_env
 
 from torch.distributions.categorical import Categorical
 
+from functools import reduce
+import operator
+
 # NICHT ENTFERNEN
 # from appl.traintrack_env.envs.model import LocomotiveAction, TrackSwitchAction
 
@@ -33,26 +36,24 @@ def evaluate(
 ):
     envs = gym.vector.SyncVectorEnv([make_env(env_id)])
     agent = Model(envs).to(device)
-    print("model_path:", model_path)
     agent.load_state_dict(torch.load(model_path, map_location=device))
     agent.eval()
 
     obs, _ = envs.reset(options={'a': initial_state})
     episodic_returns = []
+    done_actions = []
     while len(episodic_returns) < eval_episodes:
-        print('state: ', obs)
         actions, _, _, _ = agent.get_action_and_value(torch.Tensor(obs).to(device))
         next_obs, _, _, _, infos = envs.step(actions.cpu().numpy())
-        print('Action', actions.cpu().numpy())
+        done_actions += [actions.cpu().numpy()]
         if "final_info" in infos:
             for info in infos["final_info"]:
                 if "episode" not in info:
                     continue
-                print(f"eval_episode={len(episodic_returns)}, episodic_return={info['episode']['r']}")
                 episodic_returns += [info["episode"]["r"]]
         obs = next_obs
 
-    return episodic_returns
+    return done_actions
 
 def layer_init(layer, std=np.sqrt(2), bias_const=0.0):
     torch.nn.init.orthogonal_(layer.weight, std)
@@ -94,18 +95,15 @@ def make_env(env_id):
         return env
     return thunk
 
-def run_ppo():
-    print('TESTTESTET')
+def flatten(xss):
+    return [x for xs in xss for x in xs]
 
-def run_ppo_2(input_vector: [int]):
-    # model_path = "/home/dm/Progs/AI/cleanrl/cleanrl/runs/traintrack_env/Railway-v0__ppo__1__1738001771/ppo.cleanrl_model"
+def run_ppo(input_vector: [int]):
     my_path = os.path.abspath(os.path.dirname(__file__))
     model_path = os.path.join(my_path, "ppo.cleanrl_model")
     torch.load(model_path)
-    print(f"model loaded from {model_path}")
-    print(f"input vector {input_vector}")
 
-    episodic_returns = evaluate(
+    ret = evaluate(
         np.array([input_vector], dtype=np.int16),
         model_path,
         make_env,
@@ -116,6 +114,8 @@ def run_ppo_2(input_vector: [int]):
         device="cpu",
         capture_video=False,
     )
+    return flatten(ret)
+
 
 if __name__ == "__main__":
     run_ppo()
