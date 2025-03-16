@@ -1,9 +1,9 @@
 # TrainExecutionPlanService
 
 ## Docker build locally
-```docker build -t myimage .```
+```docker build -t train-test .```
 
-```docker run -d --name python-test -p 80:80 myimage```
+```docker run -d --name python-test -p 80:80 -t train-test```
 
 
 ### Azure
