@@ -1,8 +1,14 @@
 from enum import Enum
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI
 from typing import List
 from pydantic import BaseModel
+from appl.ppo_eval import run_ppo_2
+
+# NICHT ENTFERNEN
+# from appl.traintrack_env.envs.model import LocomotiveAction, TrackSwitchAction
+
+import appl.traintrack_env
 
 app = FastAPI()
 
@@ -29,4 +35,8 @@ class Action(Enum):
 
 @app.post("/evaluate-execution-plan")
 async def evaluate_execution_plan(state: State) -> List[Action]:
+    run_ppo_2(state_to_vec(state))
     return [Action.TRAIN_1_FORWARD, Action.SWITCH_1_STRAIGHT, Action.TRAIN_1_FORWARD, Action.SWITCH_0_DIVERGING, Action.TRAIN_1_BACKWARD]
+
+def state_to_vec(state: State) -> [int]:
+    return [state.train1_initial_position, state.train2_initial_position, state.train1_target_position, state.train2_target_position, *state.switch_state]
