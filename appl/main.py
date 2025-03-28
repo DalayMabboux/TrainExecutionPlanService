@@ -2,23 +2,14 @@ from enum import Enum
 
 from fastapi import FastAPI
 from typing import List
-from pydantic import BaseModel
+from starlette.staticfiles import StaticFiles
+
 from appl.ppo_eval import run_ppo
 
 # NICHT ENTFERNEN
 # from appl.traintrack_env.envs.model import LocomotiveAction, TrackSwitchAction
 
 import appl.traintrack_env
-
-app = FastAPI()
-
-class State(BaseModel):
-    train1_initial_position: int
-    train1_target_position: int
-    train2_initial_position: int
-    train2_target_position: int
-    switch_state: List[int]
-
 class Action(Enum):
     TRAIN_1_FORWARD = "train_1_forward"
     TRAIN_1_BACKWARD = "train_1_backward"
@@ -33,14 +24,19 @@ class Action(Enum):
     SWITCH_3_STRAIGHT = "switch_3_straight"
     SWITCH_3_DIVERGING = "switch_3_diverging"
 
-
 def action_to_enum(action_as_int: int) -> Action:
     return Action(list(Action._member_map_.items())[action_as_int][1])
 
-@app.post("/evaluate-execution-plan")
-async def evaluate_execution_plan(state: State) -> List[Action]:
-    bla = run_ppo(state_to_vec(state))
+api_app = FastAPI(title="api app")
+@api_app.post("/evaluate-execution-plan")
+async def evaluate_execution_plan(state_vector: list[int]) -> List[Action]:
+    bla = run_ppo(state_vector)
     return list(map(action_to_enum, bla))
 
-def state_to_vec(state: State) -> [int]:
-    return [state.train1_initial_position, state.train2_initial_position, state.train1_target_position, state.train2_target_position, *state.switch_state]
+app = FastAPI(title="main app")
+app.mount("/api", api_app)
+app.mount("/", StaticFiles(directory="./appl/html", html = True), name="site")
+
+
+
+

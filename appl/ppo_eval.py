@@ -28,11 +28,8 @@ def evaluate(
     make_env: Callable,
     env_id: str,
     eval_episodes: int,
-    run_name: str,
     Model: torch.nn.Module,
     device: torch.device = torch.device("cpu"),
-    capture_video: bool = True,
-    gamma: float = 0.99,
 ):
     envs = gym.vector.SyncVectorEnv([make_env(env_id)])
     agent = Model(envs).to(device)
@@ -109,10 +106,8 @@ def run_ppo(input_vector: [int]):
         make_env,
         "traintrack_env/Railway-v0",
         eval_episodes=1,
-        run_name=f"eval",
         Model=Agent,
         device="cpu",
-        capture_video=False,
     )
     return flatten(ret)
 
