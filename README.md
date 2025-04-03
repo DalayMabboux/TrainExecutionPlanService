@@ -21,20 +21,6 @@
          -d [1,3,4,2,1,1,1,1]
 ```
 
-
-Problem (ähnlich):
-    Traceback (most recent call last):
-      File "<stdin>", line 1, in <module>
-      File "/home/USER/venvs/torchgpu/lib/python3.10/site-packages/torch/__init__.py", line 239, in <module>
-        from torch._C import *  # noqa: F403
-    ImportError: /home/USER/venvs/torchgpu/lib/python3.10/site-packages/torch/lib/../../nvidia/cusparse/lib/libcusparse.so.12: undefined symbol: __nvJitLinkAddData_12_1, version libnvJitLink.so.12
-
-Lösung:
-    https://github.com/pytorch/pytorch/issues/111469
-    Das habe ich gemacht:
-        python -m pip uninstall torch
-        python -m pip install --pre torch --index-url https://download.pytorch.org/whl/nightly/cu121
-
 | Array Index | Meaning                     |
 |-------------|-----------------------------|
 | 0           | Initial position of train 1 |
