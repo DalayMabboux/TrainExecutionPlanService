@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Train Plan Execution Service</title>
+    <link rel="icon" type="image/x-icon" href="/favicon-16.png">
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css"/>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/MotionPathPlugin.min.js"></script>
+</head>
+
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+
+<div class="container w-full md:max-w-3xl mx-auto pt-20 mb-40">
+    <div class="w-full px-4 md:px-6 text-xl text-gray-800 leading-normal" style="font-family:Georgia,serif;">
+        <div class="font-sans">
+            <h1 class="font-bold font-sans break-normal text-gray-900 pt-6 pb-2 text-3xl md:text-4xl">Train Plan Execution Service</h1>
+            <p class="text-sm md:text-base font-normal text-gray-600">Do not use at home</p>
+        </div>
+
+        <p class="py-6">
+            Please enter the current circuit state: initial train positions and switch states
+        </p>
+        <div class="flex justify-center items-end mb-10">
+            <div class="flex-1">
+                <div class="flex flex-col gap-5">
+                    <div class="relative">
+                        <label class="flex  items-center mb-2 text-gray-600 text-xs font-medium">Circuit state</label>
+                        <input type="text" id="circuit-state"
+                               class="block w-full max-w-xs px-4 py-2 font-normal shadow-xs text-gray-900 bg-transparent border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none leading-relaxed"
+                               placeholder="4,0,1,2,1,1,1,0" required="true">
+                    </div>
+                </div>
+            </div>
+            <div class="flex-1 ml-8">
+                <button id="go" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Go</button>
+            </div>
+        </div>
+        <div id="svg_container"></div>
+        <div class="flex justify-center items-end mb-10">
+            <img src="train1.png" id="train1" alt="train1" class="train"/>
+            <img src="train2.png" id="train2" alt="train2" class="train"/>
+        </div>
+    </div>
+</div>
+
+</body>
+<script type="module" src="/index.js"></script>
+</html>
