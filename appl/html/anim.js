@@ -33,31 +33,13 @@ const switchStates = {
     3: [0, 36.5]
 }
 
-const trainMoveStates = {
-    0: {
-        0: 'p02',
-        1: 'p50'
-    },
-    1: {
-        0: 'p12',
-        1: 'p51'
-    },
-    2: {
-        0: 'p12',
-        1: 'p51'
-    }
-}
-
-function getSwitchStateAnim(switchId, state) {
+function getSwitchStateAnim(switchId, state, duration = 0.5) {
     const rotation = switchStates[switchId][state];
-    return gsap.to('#sw' + switchId, {duration: 0.5, rotation: rotation, transformOrigin: "90% 90%"});
+    return gsap.to('#sw' + switchId, {duration: duration, rotation: rotation, transformOrigin: "90% 90%"});
 }
 
 function getTrainToLocationAnim(trainId, initialBlock) {
-    // const elem = document.getElementById(trainId);
-    // const train = elem.getBoundingClientRect();
     const [pathIdHash, startEnd] = initialLocationMap[initialBlock];
-    // gsap.set('#' + trainId, { x: xx + location.x - (train.width / 2), y: yy + location.y - (train.height / 2) });
     return gsap.to(trainId, {
         motionPath: {
             path: pathIdHash,
@@ -99,10 +81,6 @@ function calculateNewBlock(currentBlock, isForward, state) {
 }
 
 function getPath(isForward, currentBlock, newBlock) {
-    // if (!isForward && (currentBlock === 0 || currentBlock === 1)) {
-    //     return  '#p' + (isForward ? ('' + newBlock + currentBlock) : ('' + currentBlock + newBlock));
-    // } else {
-    // }
     return  '#p' + (isForward ? ('' + currentBlock + newBlock) :  ('' + newBlock + currentBlock));
 }
 
@@ -199,8 +177,10 @@ export function createAnimation(actions, state, finishedCallback) {
     tl.delay(0.5);
 
     state.slice(-4).forEach((state, switchId) => {
-        tl.add(getSwitchStateAnim(switchId, state));
+        tl.add(getSwitchStateAnim(switchId, state, 0));
     });
+
+    tl.call(function() { tl.pause(); openModal(); });
 
     actions.forEach(action => {
         if (action.startsWith("train")) {

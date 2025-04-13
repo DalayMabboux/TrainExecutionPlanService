@@ -40,9 +40,22 @@
             </div>
         </div>
         <div id="svg_container"></div>
+        <div id="actions" class="mt-5"></div>
         <div class="flex justify-center items-end mb-10">
             <img src="train1.png" id="train1" alt="train1" class="train"/>
             <img src="train2.png" id="train2" alt="train2" class="train"/>
+        </div>
+    </div>
+</div>
+
+<div id="modelConfirm" class="fixed hidden z-50 inset-0 bg-gray-900 bg-opacity-60 overflow-y-auto h-full w-full px-4 ">
+    <div class="relative top-40 mx-auto shadow-xl rounded-md bg-white max-w-md">
+        <div class="p-6 text-center">
+            <h3 class="text-xl font-normal text-gray-500 mt-5 mb-6">All initial positions have been set up, continue?</h3>
+            <a href="#"  onclick="closeModal('modelConfirm')"
+               class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-base inline-flex items-center px-3 py-2.5 text-center mr-2">
+                Yes
+            </a>
         </div>
     </div>
 </div>

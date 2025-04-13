@@ -35,11 +35,32 @@ function animate(actions, initialState) {
     anim.play();
 }
 
+function showActions(actions) {
+    const actionsDiv = document.getElementById('actions');
+    while (actionsDiv.firstChild) {
+        actionsDiv.removeChild(actionsDiv.firstChild);
+    }
+    const p = document.createElement("p");
+    p.innerText = "These actions will be executed:";
+    actionsDiv.appendChild(p);
+
+    const ol = document.createElement("ol");
+    ol.classList.add("list-decimal");
+    ol.classList.add("list-inside");
+    actions.forEach(action => {
+        const li = document.createElement("li");
+        li.innerText = action;
+        ol.appendChild(li);
+    });
+    actionsDiv.appendChild(ol);
+}
+
 document.getElementById('go').addEventListener('click', function () {
     // Get input and validate
     const initialStateAsString = getInputState();
     if (!validateInput(initialStateAsString)) {
         alert("Please enter a valid input");
+        return;
     }
 
     // Call the backend to get the actions
@@ -47,9 +68,20 @@ document.getElementById('go').addEventListener('click', function () {
     getInstructions(initialState).then(
         function(actions) {
             setButtonDisable(true);
+            showActions(actions);
             animate(actions, initialState);
         },
         function(error) { alert("Error from backend: " + error); }
     );
 });
 
+window.openModal = function() {
+    document.getElementById('modelConfirm').style.display = 'block'
+    document.getElementsByTagName('body')[0].classList.add('overflow-y-hidden')
+}
+
+window.closeModal = function() {
+    document.getElementById('modelConfirm').style.display = 'none'
+    document.getElementsByTagName('body')[0].classList.remove('overflow-y-hidden')
+    anim.paused(false);
+}
